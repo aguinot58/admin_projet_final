@@ -47,12 +47,14 @@
   import { onAuthStateChanged } from 'firebase/auth';
   import { collection, onSnapshot, deleteDoc, doc, getDocs, query, orderBy } from 'firebase/firestore';
   import { useRouter } from 'vue-router';
+  import { useToast } from 'vue-toast-notification';
 
   const user = ref(null);
   const productsCollectionRefs = collection(db, 'products');
   const productsCollectionQuery = query(productsCollectionRefs);
   const products = ref([]);
   const router = useRouter();
+  const $toast = useToast();
   
   onMounted(() => {
 
@@ -91,8 +93,16 @@
 
   const supprimerProduit = async (id) => {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
-      await deleteDoc(doc(db, 'products', id));
-      products.value = produicts.value.filter(product => product.id !== id);
+
+      try {
+        await deleteDoc(doc(db, 'products', id));
+        products.value = produicts.value.filter(product => product.id !== id);
+        $toast.success(`Produit supprimé avec succès !`);
+      } catch (error) {
+        console.error('Erreur lors de la suppression du produit :', error);
+        $toast.error('Oups, une erreur est survenue');
+      }
+
     }
   };
     

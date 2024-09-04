@@ -178,9 +178,11 @@
   import { collection, addDoc } from 'firebase/firestore';
   import { db } from '@/firebase'
   import { useRouter } from 'vue-router';
+  import { useToast } from 'vue-toast-notification';
 
   const productsCollectionRefs = collection(db, 'products');
   const router = useRouter();
+  const $toast = useToast();
 
   const formSchema = yup.object({
 
@@ -201,11 +203,11 @@
     try {
       // Ajout du document dans la collection
       await addDoc(productsCollectionRefs, values);
-      alert('Produit ajouté avec succès !');
+      $toast.success(`Produit ajouté avec succès !`);
       router.push(`/`);
     } catch (error) {
       console.error('Erreur lors de l\'ajout du produit :', error);
-      alert('Une erreur est survenue lors de l\'ajout du produit.');
+      $toast.error('Oups, une erreur est survenue');
     }
   }
     
