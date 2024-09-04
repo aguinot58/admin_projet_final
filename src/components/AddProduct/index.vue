@@ -1,16 +1,223 @@
 <template>
-    <div class="px-4 py-5 my-5 text-center">
-      <h1 class="display-5 fw-bold">Add</h1>
-      <p class="lead mb-4">{{ example }}</p>
+    <div class="px-4 my-2 text-center">
+
+      <h1 class="display-6 fw-bold">Ajout d'un nouveau produit</h1>
+
+      <Form @submit="onSubmit" :validation-schema="formSchema" class="my-5 d-flex flex-column align-items-center">
+
+        <div class="mb-3 d-flex justify-content-between w-50">
+          <label for="name" class="me-2">Nom du produit<span class="text-danger">*</span> : </label>
+          <Field 
+            name = "name"
+            class="control-form me-2 w-50"
+            placeholder = "Nom du produit"
+          />
+        </div>
+        <ErrorMessage as="p" name="name" v-slot="{ message }" class="alert alert-danger py-1">
+          {{ message }}
+        </ErrorMessage>
+        
+        <div class="mb-3 d-flex justify-content-between w-50">
+          <label for="overview" class="me-2">Aperçu<span class="text-danger">*</span> :</label>
+          <Field 
+            as="textarea"
+            name = "overview"
+            class="control-form me-2 w-50"
+            placeholder = "Aperçu"
+            rows="2"
+          />
+        </div>
+        <ErrorMessage as="p" name="overview" v-slot="{ message }" class="alert alert-danger py-1">
+          {{ message }}
+        </ErrorMessage>
+
+        <div class="mb-3 d-flex justify-content-between w-50">
+          <label for="long_escription" class="me-2">Description<span class="text-danger">*</span> :</label>
+          <Field 
+            as="textarea"
+            name = "long_description"
+            class="control-form me-2 w-50"
+            placeholder = "Description"
+            rows="5"
+          />
+        </div>
+        <ErrorMessage as="p" name="long_description" v-slot="{ message }" class="alert alert-danger py-1">
+          {{ message }}
+        </ErrorMessage>
+
+        <div class="mb-3 d-flex justify-content-between w-50">
+          <label for="price" class="me-2">Prix (€)<span class="text-danger">*</span> :</label>
+          <Field 
+            name = "price"
+            class="control-form me-2 w-50"
+            placeholder = "Prix"
+          />
+        </div>
+        <ErrorMessage as="p" name="price" v-slot="{ message }" class="alert alert-danger py-1">
+          {{ message }}
+        </ErrorMessage>
+
+        <div class="mb-3 d-flex justify-content-between w-50">
+          <label for="poster" class="me-2">Lien Web Couverture<span class="text-danger">*</span> :</label>
+          <Field 
+            name = "poster"
+            class="control-form me-2 w-50"
+            placeholder = "Lien Couverture"
+          />
+        </div>
+        <ErrorMessage as="p" name="poster" v-slot="{ message }" class="alert alert-danger py-1">
+          {{ message }}
+        </ErrorMessage>
+
+        <div class="mb-3 d-flex justify-content-between w-50">
+          <label for="image_local" class="me-2">Image locale<span class="text-danger">*</span> :</label>
+          <Field 
+            name = "image_local"
+            class="control-form me-2 w-50"
+            placeholder = "Image"
+          />
+        </div>
+        <ErrorMessage as="p" name="image_local" v-slot="{ message }" class="alert alert-danger py-1">
+          {{ message }}
+        </ErrorMessage>
+
+        <div class="d-flex w-50">
+
+          <div class="d-flex flex-column w-100 align-items-center">
+            
+            <div class="mb-3 d-flex justify-content-between w-100">
+              <label for="rating" class="me-2">Note<span class="text-danger">*</span> :</label>
+              <Field 
+                name = "rating"
+                class="control-form me-2 w-50"
+                placeholder = "Note"
+              />
+            </div>
+            <ErrorMessage as="p" name="rating" v-slot="{ message }" class="alert alert-danger py-1">
+              {{ message }}
+            </ErrorMessage>
+
+          </div>
+
+          <div class="d-flex flex-column w-100 align-items-center">
+
+            <div class="mb-3 d-flex justify-content-between w-100">
+              <label for="size" class="me-2">Taille (MB)<span class="text-danger">*</span> :</label>
+              <Field 
+                name = "size"
+                class="control-form me-2 w-50"
+                placeholder = "Taille"
+              />
+            </div>
+            <ErrorMessage as="p" name="size" v-slot="{ message }" class="alert alert-danger py-1">
+              {{ message }}
+            </ErrorMessage>
+
+          </div>
+
+        </div>
+
+        <div class="d-flex w-50">
+
+          <div class="d-flex flex-column w-100 align-items-center">
+
+            <div class="mb-3 d-flex justify-content-between w-100">
+              <label for="in_stock" class="me-2">En stock<span class="text-danger">*</span> :</label>
+              <Field 
+                as="select"
+                name = "in_stock"
+                class="control-form me-2 w-50"
+                placeholder = "En stock"
+              >
+                <option :value="true">Oui</option>
+                <option :value="false">Non</option>
+              </Field>
+            </div>
+            <ErrorMessage as="p" name="in_stock" v-slot="{ message }" class="alert alert-danger py-1">
+              {{ message }}
+            </ErrorMessage>
+
+          </div>
+          
+          <div class="d-flex flex-column w-100 align-items-center">
+
+            <div class="mb-3 d-flex justify-content-between w-100">
+              <label for="best_seller" class="me-2">Best seller<span class="text-danger">*</span> :</label>
+              <Field 
+                as="select"
+                name = "best_seller"
+                class="control-form me-2 w-50"
+                placeholder = "Best seller"
+              >
+                <option :value="true">Oui</option>
+                <option :value="false">Non</option>
+              </Field>
+            </div>
+            <ErrorMessage as="p" name="best_seller" v-slot="{ message }" class="alert alert-danger py-1">
+              {{ message }}
+            </ErrorMessage>
+
+          </div>
+      
+        </div>
+
+        <label class="my-3"><span class="text-danger">*</span>Champs obligatoires</label>
+
+        <button class="btn btn-primary my-3">
+          Ajouter
+        </button>
+
+      </Form>
     </div>
 </template>
   
 <script setup>
 
-   
-  
+  import  { Field, Form, ErrorMessage } from 'vee-validate'
+  import * as yup from 'yup';
+  import { collection, addDoc } from 'firebase/firestore';
+  import { db } from '@/firebase'
+  import { useRouter } from 'vue-router';
+
+  const productsCollectionRefs = collection(db, 'products');
+  const router = useRouter();
+
+  const formSchema = yup.object({
+
+    name: yup.string().required('Ce champ est obligatoire'),
+    overview: yup.string().required('Ce champ est obligatoire'),
+    rating: yup.number().typeError('Ce champ doit être un nombre').integer('Ce champ doit être un entier').required('Ce champ est obligatoire'),
+    long_description: yup.string().required('Ce champ est obligatoire'),
+    price: yup.number().typeError('Ce champ doit être un nombre').integer('Ce champ doit être un entier').required('Ce champ est obligatoire'),
+    poster: yup.string().url('Ce champ doit être un lien valide').matches(/^http/, 'Ce champ doit commencer par http ou hhtps').required('Ce champ est obligatoire'),
+    image_local: yup.string().required('Ce champ est obligatoire'),
+    in_stock: yup.boolean().required('Ce champ est obligatoire'),
+    size: yup.number().typeError('Ce champ doit être un nombre').integer('Ce champ doit être un entier').required('Ce champ est obligatoire'),
+    best_seller: yup.boolean().required('Ce champ est obligatoire'),
+
+  });
+
+  async function onSubmit(values) {
+    try {
+      // Ajout du document dans la collection
+      await addDoc(productsCollectionRefs, values);
+      alert('Produit ajouté avec succès !');
+      router.push(`/`);
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout du produit :', error);
+      alert('Une erreur est survenue lors de l\'ajout du produit.');
+    }
+  }
+    
 </script>
 
 <style scoped>
+
+  Form {
+    width: 100%;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 
 </style>

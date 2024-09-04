@@ -1,5 +1,5 @@
 <template>
-    <div class="px-4 my-2 text-center content">
+    <div class="px-4 my-2 text-center">
       <div v-if="user">
         <h1 class="display-6 fw-bold">Liste des produits</h1>
         <button class="btn btn-primary my-3" @click="ajouterProduit()">Ajouter un produit</button>
@@ -10,7 +10,7 @@
               <th scope="col">Nom du Produit</th>
               <th scope="col">Prix</th>
               <th scope="col">Rating</th>
-              <th scope="col">Taille</th>
+              <th scope="col">Taille (MB)</th>
               <th scope="col">Best Seller</th>
               <th scope="col">En Stock</th>
               <th scope="col">Actions</th>
@@ -62,10 +62,8 @@
       if (user.value) {
         // import de la liste des produits
         onSnapshot(productsCollectionQuery, (querySnapshot) => {
-          console.log("test");
           const fbProducts = [];
           querySnapshot.forEach((doc) => {
-            console.log(doc);
             const product = {
               id: doc.id,
               name: doc.data().name,
@@ -77,7 +75,6 @@
             };
             fbProducts.push(product);
           });
-          console.log('Products fetched from Firestore:', fbProducts);
           products.value = fbProducts;
         });
       }
