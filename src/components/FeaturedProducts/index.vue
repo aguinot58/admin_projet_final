@@ -160,11 +160,6 @@
             await Promise.all(deletePromises);
             console.log("Tous les produits ont été supprimés de la collection featured_products");
 
-            console.log("avant ajout : " + selectedProducts.value);
-
-            console.log("Produits à ajouter : ", productsToAdd);
-            
-
             // Étape 2 : Ajouter les nouveaux produits depuis "selectedProducts"
             const addPromises = productsToAdd.map(product => {
                 let productRef = doc(db, 'featured_products', product.id);
