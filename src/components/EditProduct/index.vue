@@ -6,7 +6,7 @@
 
     <Form @submit="onSubmit" :validation-schema="formSchema" v-model="formValues" class="my-5 d-flex flex-column align-items-center">
 
-      <div class="mb-3 d-flex justify-content-between w-50">
+      <div class="mb-3 d-flex justify-content-between w-50 input-container">
         <label for="name" class="me-2">Nom du produit<span class="text-danger">*</span> : </label>
         <Field 
           name = "name"
@@ -19,7 +19,7 @@
         {{ message }}
       </ErrorMessage>
       
-      <div class="mb-3 d-flex justify-content-between w-50">
+      <div class="mb-3 d-flex justify-content-between w-50 input-container">
         <label for="overview" class="me-2">Aperçu<span class="text-danger">*</span> :</label>
         <Field 
           as="textarea"
@@ -34,7 +34,7 @@
         {{ message }}
       </ErrorMessage>
 
-      <div class="mb-3 d-flex justify-content-between w-50">
+      <div class="mb-3 d-flex justify-content-between w-50 input-container">
         <label for="long_escription" class="me-2">Description<span class="text-danger">*</span> :</label>
         <Field 
           as="textarea"
@@ -49,7 +49,7 @@
         {{ message }}
       </ErrorMessage>
 
-      <div class="mb-3 d-flex justify-content-between w-50">
+      <div class="mb-3 d-flex justify-content-between w-50 input-container">
         <label for="price" class="me-2">Prix (€)<span class="text-danger">*</span> :</label>
         <Field 
           name = "price"
@@ -62,7 +62,7 @@
         {{ message }}
       </ErrorMessage>
 
-      <div class="mb-3 d-flex justify-content-between w-50">
+      <div class="mb-3 d-flex justify-content-between w-50 input-container">
         <label for="poster" class="me-2">Lien Web Couverture<span class="text-danger">*</span> :</label>
         <Field 
           name = "poster"
@@ -75,7 +75,7 @@
         {{ message }}
       </ErrorMessage>
 
-      <div class="mb-3 d-flex justify-content-between w-50">
+      <div class="mb-3 d-flex justify-content-between w-50 input-container">
         <label for="image_local" class="me-2">Image locale<span class="text-danger">*</span> :</label>
         <Field 
           name = "image_local"
@@ -88,11 +88,11 @@
         {{ message }}
       </ErrorMessage>
 
-      <div class="d-flex w-50">
+      <div class="d-flex w-50 data-container">
 
         <div class="d-flex flex-column w-100 align-items-center">
           
-          <div class="mb-3 d-flex justify-content-between w-100">
+          <div class="mb-3 d-flex justify-content-between w-100 input-container">
             <label for="rating" class="me-2">Note<span class="text-danger">*</span> :</label>
             <Field 
               name = "rating"
@@ -109,7 +109,7 @@
 
         <div class="d-flex flex-column w-100 align-items-center">
 
-          <div class="mb-3 d-flex justify-content-between w-100">
+          <div class="mb-3 d-flex justify-content-between w-100 input-container">
             <label for="size" class="me-2">Taille (MB)<span class="text-danger">*</span> :</label>
             <Field 
               name = "size"
@@ -126,11 +126,11 @@
 
       </div>
 
-      <div class="d-flex w-50">
+      <div class="d-flex w-50 data-container">
 
         <div class="d-flex flex-column w-100 align-items-center">
 
-          <div class="mb-3 d-flex justify-content-between w-100">
+          <div class="mb-3 d-flex justify-content-between w-100 input-container">
             <label for="in_stock" class="me-2">En stock<span class="text-danger">*</span> :</label>
             <Field 
               as="select"
@@ -151,7 +151,7 @@
         
         <div class="d-flex flex-column w-100 align-items-center">
 
-          <div class="mb-3 d-flex justify-content-between w-100">
+          <div class="mb-3 d-flex justify-content-between w-100 input-container">
             <label for="best_seller" class="me-2">Best seller<span class="text-danger">*</span> :</label>
             <Field 
               as="select"
@@ -275,11 +275,50 @@ async function onSubmit(values) {
 
 <style scoped>
 
-Form {
-  width: 100%;
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
-}
+  Form {
+    width: 100%;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  @media only screen and (max-width: 875px) {
+        
+    .data-container {
+    
+      flex-wrap: wrap;
+    
+    }
+    
+  }
+    
+  @media only screen and (max-width: 775px) {
+            
+    .input-container {
+        
+      flex-direction: column;
+      align-items: center;
+      width: 100%;;
+        
+    }
+    
+    input, textarea, select {
+    
+      width: 100% !important;
+      margin: 0 !important;
+    
+    }
+        
+  }
+
+  @media only screen and (max-width: 775px) {
+            
+    input, textarea, select {
+            
+      width: 150% !important;
+         
+    }
+                
+  }
 
 </style>

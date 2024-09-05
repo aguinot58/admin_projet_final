@@ -14,7 +14,7 @@
                         <div class='card-body' key={product.id}>
                             <h5 class='card-title fw-bold fs-4 text-start'>{{ product.name }}</h5>
                             <p class='card-text text-start'>{{ product.overview }}</p>
-                            <div class="d-flex justify-content-evenly">
+                            <div class="d-flex justify-content-evenly flex-wrap">
                                 <div class="d-flex me-2">
                                     <label class="card-text fw-bold me-2">Note :</label>
                                     <p class='card-text text-start'>{{ product.rating }}</p>
@@ -28,7 +28,7 @@
                                     <p class='card-text text-start'>{{ product.size }}(MB)</p>
                                 </div>
                             </div>
-                            <div class="d-flex justify-content-evenly">
+                            <div class="d-flex justify-content-evenly flex-wrap">
                                 <div class="d-flex me-2">
                                     <label class="card-text fw-bold me-2">Best seller :</label>
                                     <p class='card-text text-start'>{{ product.best_seller ? "Oui" : "Non" }}</p>
@@ -46,11 +46,11 @@
 
             <div class="d-flex justify-content-evenly mt-5 w-25">
 
-                <button type="button" class="btn btn-primary my-3 me-2" @click.prevent="randomProducts">
+                <button type="button" class="btn btn-primary my-3 me-2 text-nowrap" @click.prevent="randomProducts">
                     Nouvelle selection
                 </button>
 
-                <button type="button" class="btn btn-primary my-3" @click.prevent="updateFeaturedProducts">
+                <button type="button" class="btn btn-primary my-3 text-nowrap" @click.prevent="updateFeaturedProducts">
                     Mettre à jour
                 </button>
 
@@ -202,7 +202,7 @@
 
     img {
 
-        height: 250px;
+        height: auto;
 
     }
 
@@ -235,6 +235,38 @@
         display: flex;
         justify-content: space-evenly;
         align-items: stretch; /* Aligne les éléments à la même hauteur */
+    }
+
+    @media only screen and (max-width: 951px) {
+        
+        .cards-container {
+
+            flex-wrap: wrap;
+            margin-left: 6vw;
+
+        }
+
+    }
+
+    @media only screen and (max-width: 551px) {
+        
+        .cards-container {
+
+            width: 100% !important;
+            margin: 0;
+            padding: 0;
+            flex-direction: column;
+            align-items: center;
+
+        }
+
+        .card {
+
+            width: 100%;
+            margin-left: 0 !important;
+
+        }
+
     }
 
 </style>
