@@ -1,4 +1,5 @@
 <template>
+  
   <div class="px-4 my-2 text-center">
 
     <h1 class="display-6 fw-bold">Ajout d'un nouveau produit</h1>
@@ -178,7 +179,9 @@
       </button>
 
     </Form>
+
   </div>
+
 </template>
 
 <script setup>

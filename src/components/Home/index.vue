@@ -1,40 +1,52 @@
 <template>
-    <div class="px-4 my-2 text-center">
-      <div v-if="user" class="d-flex flex-column align-items-center">
-        <h1 class="display-6 fw-bold">Liste des produits</h1>
-        <button class="btn btn-primary my-3" @click="ajouterProduit()">Ajouter un produit</button>
-        <!-- Le contenu de la page Home pour l'utilisateur connecté -->
-        <table class="table table-striped mt-4">
-          <thead>
-            <tr>
-              <th scope="col">Nom du Produit</th>
-              <th scope="col">Prix</th>
-              <th scope="col">Rating</th>
-              <th scope="col">Taille (MB)</th>
-              <th scope="col">Best Seller</th>
-              <th scope="col">En Stock</th>
-              <th scope="col">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(product, index) in products" :key="index">
-              <td>{{ product.name }}</td>
-              <td>{{ product.price }} €</td>
-              <td>{{ product.rating }}</td>
-              <td>{{ product.size }}</td>
-              <td v-if="product.best_seller">Oui</td>
-              <td v-else>Non</td>
-              <td v-if="product.in_stock">Oui</td>
-              <td v-else>Non</td>
-              <td>
-                <button class="btn btn-primary me-2" @click="modifierProduit(product.id)">Modifier</button>
-                <button class="btn btn-danger" @click="supprimerProduit(product.id)">Supprimer</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
 
-        <div class="pagination mt-5">
+    <div class="px-4 my-2 text-center">
+      
+      <div v-if="user" class="d-flex flex-column align-items-center table-container">
+
+        <h1 class="display-6 fw-bold">Liste des produits</h1>
+
+        <button class="btn btn-primary my-3" @click="ajouterProduit()">Ajouter un produit</button>
+
+        <div class="table-wrapper">
+
+          <table class="table table-striped mt-4">
+            <thead>
+              <tr>
+                <th scope="col">Nom du Produit</th>
+                <th scope="col">Prix</th>
+                <th scope="col">Rating</th>
+                <th scope="col">Taille (MB)</th>
+                <th scope="col">Best Seller</th>
+                <th scope="col">En Stock</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(product, index) in products" :key="index">
+                <td>{{ product.name }}</td>
+                <td>{{ product.price }} €</td>
+                <td>{{ product.rating }}</td>
+                <td>{{ product.size }}</td>
+                <td v-if="product.best_seller">Oui</td>
+                <td v-else>Non</td>
+                <td v-if="product.in_stock">Oui</td>
+                <td v-else>Non</td>
+                <td>
+                  <button class="btn btn-primary me-2" @click="modifierProduit(product.id)">Modifier</button>
+                  <button class="btn btn-danger" @click="supprimerProduit(product.id)">Supprimer</button>
+                </td>
+              </tr>
+              <!-- Si moins de 7 produits, ajouter des lignes vides pour maintenir la hauteur -->
+              <tr v-for="i in emptyRows" :key="'empty' + i" class="table-empty">
+                <td colspan="7"></td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div> 
+        
+        <div class="pagination mt-5 align-items-center">
           <button class="btn btn-secondary me-2" @click="previousPage" :disabled="currentPage === 1">
             Page précédente
           </button>
@@ -45,15 +57,18 @@
         </div>
 
       </div>
-      <div v-else>
+
+      <div v-else class="mt-5">
         <h1 class="display-6 fw-bold">Accès refusé : veuillez vous connecter à votre compte</h1>
       </div>
+
     </div>
+
 </template>
   
 <script setup>
 
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, computed } from 'vue';
   import { auth, db } from '../../firebase/index.js';
   import { onAuthStateChanged } from 'firebase/auth';
   import { collection, deleteDoc, doc, getDocs, query, orderBy, limit, limitToLast, startAfter, endBefore, getCountFromServer } from 'firebase/firestore';
@@ -67,17 +82,21 @@
   const $toast = useToast();
 
   const currentPage = ref(1);
-  const productsPerPage = 10; // 10 produits par page
+  const productsPerPage = 7; // 7 produits par page
   const lastVisible = ref(null); // Le dernier produit visible (pour paginer en avant)
   const firstVisible = ref(null); // Le premier produit visible (pour paginer en arrière)
   const totalProducts = ref(0);  // Nombre total de produits
   const totalPages = ref(0);
-
   
   onMounted(() => {
 
     onAuthStateChanged(auth, (currentUser) => {
       user.value = currentUser;
+      currentPage.value = 1;
+      lastVisible.value = null;
+      firstVisible.value = null;
+      totalProducts.value = 0;
+      totalPages.value = 0;
       if (user.value) {
         fetchTotalProducts();
         fetchProducts();
@@ -147,6 +166,11 @@
     }
   };
 
+  const emptyRows = computed(() => {
+    const rowCount = products.value.length;
+    return rowCount < productsPerPage ? productsPerPage - rowCount : 0;
+  });
+
   const ajouterProduit = () => {
     router.push(`/products/new`);
   };
@@ -174,7 +198,16 @@
 
 <style scoped>
 
-  table {
+  .table-container {
+    flex-grow: 1; /* Fait en sorte que cette section prenne l'espace disponible */
+    display: flex;
+    flex-direction: column;
+  }
+
+  .table-wrapper {
+    flex-grow: 1;
+    min-height: 400px; /* Hauteur minimale pour la table */
+    overflow-y: auto; /* Permet le défilement si le contenu dépasse */
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
@@ -182,6 +215,11 @@
 
   table td {
     vertical-align: middle;
+  }
+
+  .table-empty {
+    height: 55px; /* Hauteur des lignes vides */
+    background-color: #f9f9f9;
   }
 
 </style>

@@ -11,7 +11,10 @@
   
         <ul class="nav nav-pills">
           <li class="nav-item">
-            <router-link to="/" class="nav-link">Home</router-link>
+            <router-link to="/" class="nav-link">Accueil</router-link>
+          </li>
+          <li v-if="user" class="nav-item">
+            <router-link to="/products/featured" class="nav-link">Featured</router-link>
           </li>
           <li class="nav-item">
             <a
@@ -36,51 +39,48 @@
     </div>
 </template>
 
-<script>
-import { ref, onMounted } from 'vue';
-import { auth } from '../firebase/index.js';
-import { signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'firebase/auth';
+<script setup>
 
-export default {
-  setup() {
-    const user = ref(null);
+  import { ref, onMounted } from 'vue';
+  import { auth } from '../firebase/index.js';
+  import { signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'firebase/auth';
+  import { useRouter } from 'vue-router';
 
-    // Vérifier l'état de l'utilisateur à chaque chargement
-    onMounted(() => {
-      onAuthStateChanged(auth, (currentUser) => {
-        user.value = currentUser;
-      });
+  const user = ref(null);
+  const router = useRouter();
+
+  // Vérifier l'état de l'utilisateur à chaque chargement
+  onMounted(() => {
+    onAuthStateChanged(auth, (currentUser) => {
+      user.value = currentUser;
     });
+  });
 
-    // Fonction pour se connecter
-    const login = async () => {
-      const provider = new GoogleAuthProvider();
-      try {
-        await signInWithPopup(auth, provider);
-      } catch (error) {
-        console.error("Erreur de connexion : ", error);
-      }
-    };
+  // Fonction pour se connecter
+  const login = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+      router.push(`/`);
+    } catch (error) {
+      console.error("Erreur de connexion : ", error);
+    }
+  };
 
-    // Fonction pour se déconnecter
-    const logout = async () => {
-      try {
-        await signOut(auth);
-      } catch (error) {
-        console.error("Erreur de déconnexion : ", error);
-      }
-    };
+  // Fonction pour se déconnecter
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      router.push(`/`);
+    } catch (error) {
+      console.error("Erreur de déconnexion : ", error);
+    }
+  };
 
-    return {
-      user,
-      login,
-      logout,
-    };
-  }
-};
 </script>
   
 <style scoped>
+
     body {
         padding: 0;
         margin: 0;
@@ -96,4 +96,5 @@ export default {
       cursor: pointer;
       color: black;
     }
+
 </style>
