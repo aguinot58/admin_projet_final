@@ -25,6 +25,7 @@
 
   .content {
     flex-grow: 1;
+    padding-bottom: 2em;
   }
 
 </style>

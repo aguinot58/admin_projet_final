@@ -1,6 +1,6 @@
 <template>
     <div class="px-4 my-2 text-center">
-      <div v-if="user">
+      <div v-if="user" class="d-flex flex-column align-items-center">
         <h1 class="display-6 fw-bold">Liste des produits</h1>
         <button class="btn btn-primary my-3" @click="ajouterProduit()">Ajouter un produit</button>
         <!-- Le contenu de la page Home pour l'utilisateur connecté -->
@@ -33,6 +33,17 @@
             </tr>
           </tbody>
         </table>
+
+        <div class="pagination mt-5">
+          <button class="btn btn-secondary me-2" @click="previousPage" :disabled="currentPage === 1">
+            Page précédente
+          </button>
+          <span>Page {{ currentPage }}</span>
+          <button class="btn btn-secondary ms-2" @click="nextPage" :disabled="currentPage === totalPages">
+            Page suivante
+          </button>
+        </div>
+
       </div>
       <div v-else>
         <h1 class="display-6 fw-bold">Accès refusé : veuillez vous connecter à votre compte</h1>
@@ -45,43 +56,96 @@
   import { ref, onMounted } from 'vue';
   import { auth, db } from '../../firebase/index.js';
   import { onAuthStateChanged } from 'firebase/auth';
-  import { collection, onSnapshot, deleteDoc, doc, getDocs, query, orderBy } from 'firebase/firestore';
+  import { collection, deleteDoc, doc, getDocs, query, orderBy, limit, limitToLast, startAfter, endBefore, getCountFromServer } from 'firebase/firestore';
   import { useRouter } from 'vue-router';
   import { useToast } from 'vue-toast-notification';
 
   const user = ref(null);
   const productsCollectionRefs = collection(db, 'products');
-  const productsCollectionQuery = query(productsCollectionRefs);
   const products = ref([]);
   const router = useRouter();
   const $toast = useToast();
+
+  const currentPage = ref(1);
+  const productsPerPage = 10; // 10 produits par page
+  const lastVisible = ref(null); // Le dernier produit visible (pour paginer en avant)
+  const firstVisible = ref(null); // Le premier produit visible (pour paginer en arrière)
+  const totalProducts = ref(0);  // Nombre total de produits
+  const totalPages = ref(0);
+
   
   onMounted(() => {
 
-    // Vérifier l'état de l'utilisateur à chaque chargement de la page
     onAuthStateChanged(auth, (currentUser) => {
       user.value = currentUser;
       if (user.value) {
-        // import de la liste des produits
-        onSnapshot(productsCollectionQuery, (querySnapshot) => {
-          const fbProducts = [];
-          querySnapshot.forEach((doc) => {
-            const product = {
-              id: doc.id,
-              name: doc.data().name,
-              price: doc.data().price,
-              rating: doc.data().rating,
-              size: doc.data().size,
-              best_seller: doc.data().best_seller,
-              in_stock: doc.data().in_stock
-            };
-            fbProducts.push(product);
-          });
-          products.value = fbProducts;
-        });
+        fetchTotalProducts();
+        fetchProducts();
       }
     });
+
   });
+
+  const fetchTotalProducts = async () => {
+    const snapshot = await getCountFromServer(productsCollectionRefs);
+    totalProducts.value = snapshot.data().count;
+    totalPages.value = Math.ceil(totalProducts.value / productsPerPage);  // Calcul du nombre total de pages
+  };
+
+  const fetchProducts = async (direction = 'forward') => {
+    let q;
+
+    // Premier chargement ou navigation en avant
+    if (direction === 'forward') {
+      if (lastVisible.value) {
+        // Charger la page suivante à partir du dernier produit visible
+        q = query(productsCollectionRefs, orderBy('name'), startAfter(lastVisible.value), limit(productsPerPage));
+      } else {
+        // Charger la première page
+        q = query(productsCollectionRefs, orderBy('name'), limit(productsPerPage));
+      }
+    } else if (direction === 'backward') {
+      // Charger la page précédente à partir du premier produit visible
+      if (firstVisible.value) {
+        q = query(productsCollectionRefs, orderBy('name'), endBefore(firstVisible.value), limitToLast(productsPerPage));
+      }
+    }
+
+    const querySnapshot = await getDocs(q);
+    const fbProducts = [];
+    
+    // Mettre à jour firstVisible et lastVisible
+    firstVisible.value = querySnapshot.docs[0];
+    lastVisible.value = querySnapshot.docs[querySnapshot.docs.length - 1];
+
+    querySnapshot.forEach((doc) => {
+      const product = {
+        id: doc.id,
+        name: doc.data().name,
+        price: doc.data().price,
+        rating: doc.data().rating,
+        size: doc.data().size,
+        best_seller: doc.data().best_seller,
+        in_stock: doc.data().in_stock
+      };
+      fbProducts.push(product);
+    });
+    products.value = fbProducts;
+  };
+
+  const nextPage = async () => {
+    if (currentPage.value < totalPages.value) {
+      await fetchProducts('forward');
+      currentPage.value += 1;
+    }
+  };
+
+  const previousPage = async () => {
+    if (currentPage.value > 1) {
+      await fetchProducts('backward');
+      currentPage.value -= 1;
+    }
+  };
 
   const ajouterProduit = () => {
     router.push(`/products/new`);
