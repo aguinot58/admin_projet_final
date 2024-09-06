@@ -10,31 +10,37 @@
 
         <div class="table-wrapper">
 
-          <table class="table table-striped mt-4">
+          <table class="table table-striped mt-4 overflow-x-auto">
             <thead>
               <tr>
-                <th scope="col">Nom du Produit</th>
-                <th scope="col">Prix</th>
-                <th scope="col">Rating</th>
-                <th scope="col">Taille (MB)</th>
-                <th scope="col">Best Seller</th>
-                <th scope="col">En Stock</th>
-                <th scope="col">Actions</th>
+                <th scope="col" class="col_1">Nom du Produit</th>
+                <th scope="col" class="col_2">Prix</th>
+                <th scope="col" class="col_3">Rating</th>
+                <th scope="col" class="col_4">Taille (MB)</th>
+                <th scope="col" class="col_5">Best Seller</th>
+                <th scope="col" class="col_6">En Stock</th>
+                <th scope="col" class="col_7">Actions</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(product, index) in products" :key="index">
-                <td>{{ product.name }}</td>
-                <td>{{ product.price }} €</td>
-                <td>{{ product.rating }}</td>
-                <td>{{ product.size }}</td>
-                <td v-if="product.best_seller">Oui</td>
-                <td v-else>Non</td>
-                <td v-if="product.in_stock">Oui</td>
-                <td v-else>Non</td>
-                <td>
-                  <button class="btn btn-primary me-2" @click="modifierProduit(product.id)">Modifier</button>
-                  <button class="btn btn-danger" @click="supprimerProduit(product.id)">Supprimer</button>
+                <td class="col_1">{{ product.name }}</td>
+                <td class="col_2">{{ product.price }} €</td>
+                <td class="col_3">{{ product.rating }}</td>
+                <td class="col_4">{{ product.size }}</td>
+                <td class="col_5" v-if="product.best_seller">Oui</td>
+                <td class="col_5" v-else>Non</td>
+                <td class="col_6" v-if="product.in_stock">Oui</td>
+                <td class="col_6" v-else>Non</td>
+                <td class="d-flex flex-nowrap col_7 justify-content-center">
+                  <button class="btn btn-primary me-2" @click="modifierProduit(product.id)">
+                    <i class="bi bi-pencil d-md-none"></i>
+                    <span class="d-none d-md-inline">Modifier</span>
+                  </button>
+                  <button class="btn btn-danger" @click="supprimerProduit(product.id)">
+                    <i class="bi bi-trash3-fill d-md-none"></i>
+                    <span class="d-none d-md-inline">Supprimer</span>
+                  </button>
                 </td>
               </tr>
               <!-- Si moins de 7 produits, ajouter des lignes vides pour maintenir la hauteur -->
@@ -213,6 +219,10 @@
     margin: 0 auto;
   }
 
+  table {
+    overflow-x: auto !important;
+  }
+
   table td {
     vertical-align: middle;
   }
@@ -220,6 +230,90 @@
   .table-empty {
     height: 55px; /* Hauteur des lignes vides */
     background-color: #f9f9f9;
+  }
+
+  @media only screen and (max-width: 975px) {
+        
+    th.col_4, td.col_4 {
+        display:none;
+        width:0;
+        height:0;
+        opacity:0;
+        visibility: collapse;       
+    } 
+
+  }
+
+  @media only screen and (max-width: 870px) {
+
+    td.col_1 {
+      text-wrap: wrap;
+    }
+        
+    th.col_3, td.col_3 {
+      display:none;
+      width:0;
+      height:0;
+      opacity:0;
+      visibility: collapse;       
+    } 
+    
+  }
+
+  @media only screen and (max-width: 800px) {
+        
+    th.col_2, td.col_2 {
+      display:none;
+      width:0;
+      height:0;
+      opacity:0;
+      visibility: collapse;       
+    } 
+    
+  }
+
+  @media only screen and (max-width: 755px) {
+        
+    th.col_5, td.col_5 {
+      display:none;
+      width:0;
+      height:0;
+      opacity:0;
+      visibility: collapse;       
+    } 
+        
+  }
+
+  @media only screen and (max-width: 660px) {
+        
+    th.col_6, td.col_6 {
+      display:none;
+      width:0;
+      height:0;
+      opacity:0;
+      visibility: collapse;       
+    } 
+            
+  }
+
+  @media only screen and (max-width: 580px) {
+        
+    table, table button {
+      font-size: 0.9em;
+    }       
+                
+  }
+
+  @media only screen and (max-width: 430px) {
+        
+    th.col_7, td.col_7 {
+      flex-wrap: wrap !important;
+    }   
+    
+    td.col_7 button {
+      margin: 0 !important;
+    }
+                    
   }
 
 </style>
