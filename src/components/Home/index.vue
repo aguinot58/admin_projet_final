@@ -190,7 +190,7 @@
 
       try {
         await deleteDoc(doc(db, 'products', id));
-        products.value = produicts.value.filter(product => product.id !== id);
+        products.value = products.value.filter(product => product.id !== id);
         $toast.success(`Produit supprimé avec succès !`);
       } catch (error) {
         console.error('Erreur lors de la suppression du produit :', error);
